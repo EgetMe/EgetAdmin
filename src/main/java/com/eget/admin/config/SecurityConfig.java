@@ -1,5 +1,6 @@
 package com.eget.admin.config;
 
+import com.eget.admin.security.EgetAuthenticationEnterPoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -21,12 +22,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private AuthenticationFailureHandler egetAuthenticationFailHandler;
+
+    @Autowired
+    private EgetAuthenticationEnterPoint egetAuthenticationEnterPoint;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/token").permitAll();
         http.csrf().disable()
+                .exceptionHandling().authenticationEntryPoint(egetAuthenticationEnterPoint).and()
                 .authorizeRequests().anyRequest().authenticated();
 
 

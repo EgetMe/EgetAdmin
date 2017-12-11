@@ -20,7 +20,21 @@ public abstract class AbstractTokenUtil {
 
     private String key;
 
+    public Long getExpiration() {
+        return expiration;
+    }
 
+    public void setExpiration(Long expiration) {
+        this.expiration = expiration;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
 
     /**
      * 创建Token
@@ -30,7 +44,7 @@ public abstract class AbstractTokenUtil {
         String compactJws = Jwts.builder()
                 .setSubject(username)
                 .setExpiration(generateExpired())
-                .signWith(SignatureAlgorithm.HS256, key)
+                .signWith(SignatureAlgorithm.HS256, getKey())
                 .compact();
         return TOKEN_TYPE + compactJws;
     }
@@ -65,7 +79,7 @@ public abstract class AbstractTokenUtil {
         token = getJwtToken(token);
         if (StringUtils.isNotBlank(token)) {
             try {
-                Jws<Claims> claims =  Jwts.parser().setSigningKey(key).parseClaimsJws(token);
+                Jws<Claims> claims =  Jwts.parser().setSigningKey(getKey()).parseClaimsJws(token);
                 Claims c =  claims.getBody();
                 return c;
             }catch (Exception e) {
@@ -103,36 +117,10 @@ public abstract class AbstractTokenUtil {
      * @return Date
      */
     private Date generateExpired() {
-        return new Date(System.currentTimeMillis() + expiration * 1000);
+        return new Date(System.currentTimeMillis() + getExpiration() * 1000);
     }
 
 
-    public static void main(String[] args) {
-        AbstractTokenUtil tokenUtil = new AbstractTokenUtil() {
-            @Override
-            public String createToken(String usernmae) {
-                return super.createToken(usernmae);
-            }
-        };
-        tokenUtil.expiration = 5L;
-        tokenUtil.key = "test";
-        String token = tokenUtil.createToken("hahahah");
 
-        System.out.println(token);
-
-        String username = tokenUtil.getSafeUserName(token);
-
-        System.out.println(username);
-
-        try {
-            Thread.sleep(6000);
-            username = tokenUtil.getSafeUserName(token);
-            System.out.println(username);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-
-    }
 
 }
