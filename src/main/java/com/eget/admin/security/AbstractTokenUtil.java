@@ -103,7 +103,7 @@ public abstract class AbstractTokenUtil {
         return false;
     }
 
-    private boolean isTokenExpired(String token) {
+    public boolean isTokenExpired(String token) {
         Date date = getExpiredDate(token);
         if (date != null) {
             return date.before(new Date());
@@ -117,7 +117,8 @@ public abstract class AbstractTokenUtil {
      * @return Date
      */
     private Date generateExpired() {
-        return new Date(System.currentTimeMillis() + getExpiration() * 1000);
+        Date date = new Date(System.currentTimeMillis() + getExpiration() * 1000);
+        return date;
     }
 
 

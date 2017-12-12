@@ -26,4 +26,15 @@ public class UserServiceImpl implements UserService {
         }
         return null;
     }
+
+
+    @Override
+    public User getUser(String username) {
+        return userMapper.selectByUsername(username);
+    }
+
+    @Override
+    public User getUser(Long id) {
+        return null;
+    }
 }

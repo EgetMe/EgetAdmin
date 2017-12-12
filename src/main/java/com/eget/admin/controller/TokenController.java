@@ -12,6 +12,7 @@ import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
@@ -24,32 +25,33 @@ import java.util.Map;
 @RestController
 @RequestMapping("token")
 @Api(tags = "权限管理")
-public class TokenController {
+public class TokenController extends BaseController {
 
     @Autowired
     private UserService userService;
 
-
-
-
     @Autowired
     private TokenFactory tokenFactory;
-
-
 
     @PostMapping
     @ApiOperation("获取Token")
     private ResponseData getToken(
-            @ApiParam(required = true,value = "用户名") String username,
-            @ApiParam(required = true,value = "密码") String password){
+            @ApiParam(required = true,value = "用户名")  @RequestParam() String username,
+            @ApiParam(required = true,value = "密码") @RequestParam() String password){
 
 
-        Map<String,String> result = new HashMap<>();
-        result.put("token",tokenFactory.getEgetTokenUtil().createToken(username));
+
 
 
         User user = userService.getUser(username,password);
-        return ResponseDataFactory.createSuccessResponse("OK",result);
+        if (user != null) {
+            Map<String,String> result = new HashMap<>();
+            result.put("token",tokenFactory.getEgetTokenUtil().createToken(username));
+            return ResponseDataFactory.createSuccessResponse("OK",result);
+        }
+
+        return ResponseDataFactory.createFailResponse();
+
     }
 
 }
