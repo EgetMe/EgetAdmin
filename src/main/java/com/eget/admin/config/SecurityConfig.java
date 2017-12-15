@@ -1,6 +1,7 @@
 package com.eget.admin.config;
 
 import com.eget.admin.security.EgetAuthenticationEnterPoint;
+import com.eget.admin.security.EgetAuthenticationFailureHandler;
 import com.eget.admin.security.EgetSecurityTokenFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -33,14 +34,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public EgetSecurityTokenFilter egetSecurityTokenFilter() {
+        EgetSecurityTokenFilter egetSecurityTokenFilter = new EgetSecurityTokenFilter();
         return new EgetSecurityTokenFilter();
     }
+
+    @Bean
+    public AuthenticationFailureHandler authenticationFailureHandler() {
+        return new EgetAuthenticationFailureHandler();
+    }
+
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/token").permitAll();
+
         http.csrf().disable()
                 .exceptionHandling().authenticationEntryPoint(egetAuthenticationEnterPoint).and()
                 .authorizeRequests().anyRequest().authenticated();

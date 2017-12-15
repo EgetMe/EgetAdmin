@@ -7,6 +7,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * @author geforce
  * @date 2017/12/7
@@ -36,5 +38,20 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUser(Long id) {
         return null;
+    }
+
+
+    @Override
+    public Integer saveUser(String username, String password) {
+        User user = new User();
+        user.setUsername(username);
+        user.setPassword(password);
+        return userMapper.insert(user);
+    }
+
+
+    @Override
+    public List<User> getAllUsers() {
+        return userMapper.getAllUser();
     }
 }
